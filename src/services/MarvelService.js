@@ -14,12 +14,34 @@ class MarvelService {
         return await res.json();
     }
 
-    getAllCharacters = () => { //получение всех персонажей
-        return this.getResource(`${this._apiBase}characters?limit=9&offset=210&${this._apiKey}`);
+    getAllCharacters = async () => { //получение всех персонажей
+        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=210&${this._apiKey}`);
+        return res.data.results.map(this._transformCharacter); //получаем новый массив с нужными характеристиками персонажей
     }
 
-    getCharacter = (id) => { //получение определенного персонажа по id
-        return this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`);
+    getCharacter = async (id) => { //получение определенного персонажа по id
+        const res = await this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`); //получаем все характеристики
+        return this._transformCharacter(res.data.results[0]); //получение только нужных характеристик
+    }
+
+    _transformCharacter = (char) => { //получение нужных данных из API
+        const checkDescr = function() {
+            if (char.description.length === 0) {
+                return "Персонаж не имеет описания"
+            }
+            if (char.description.length >= 205) {
+                return char.description.substr(0, 205) + '...'
+            }
+            return char.description
+        }
+
+        return {
+            name: char.name,
+            description: checkDescr(),
+            thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
+            homepage: char.urls[0].url,
+            wiki: char.urls[1].url
+        }
     }
 }
 

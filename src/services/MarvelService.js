@@ -25,19 +25,9 @@ class MarvelService {
     }
 
     _transformCharacter = (char) => { //получение нужных данных из API
-        const checkDescr = function() {
-            if (char.description.length === 0) {
-                return "Персонаж не имеет описания"
-            }
-            if (char.description.length >= 205) {
-                return char.description.substr(0, 205) + '...'
-            }
-            return char.description
-        }
-
         return {
             name: char.name,
-            description: checkDescr(),
+            description: char.description ? `${char.description.slice(0, 210)}...` : 'There is no description for this character',
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
             homepage: char.urls[0].url,
             wiki: char.urls[1].url

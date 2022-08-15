@@ -9,22 +9,44 @@ class CharList extends Component {
     state = {
         charList: [],
         loading: true,
-        error: false
+        error: false,
+        newItemLoading: false, //загрузка новых персонажей
+        offset: 210, //с какого кол-ва персонажей начинаем
+        charEnded: false //когда закончился массив с персонажами
     }
 
     marvelService = new MarvelService();
 
     componentDidMount() { //при создании элемента на странице
-        this.marvelService.getAllCharacters()
+        this.onRequest();
+    }
+
+    onRequest = (offset) => { //делаем запрос на сервер с возможностью задать отступ
+        this.onCharListLoading();
+        this.marvelService.getAllCharacters(offset)
             .then(this.onCharListLoaded)
             .catch(this.onError)
     }
 
-    onCharListLoaded = (charList) => { //записываем в массив с персонажами, после загрузки из API
+    onCharListLoading = () => { //загружаются новые персонажи
         this.setState({
-            charList,
-            loading: false
+            newItemLoading: true
         })
+    }
+
+    onCharListLoaded = (newCharList) => { //записываем в массив с персонажами, после загрузки из API (персонажи загрузились)
+        let ended = false;
+        if (newCharList.length < 9) { //если осталось меньше 9 персонажей на сервере, меняем ниже состояние charEnded
+            ended = true;
+        }
+        
+        this.setState(({offset, charList}) => ({
+            charList: [...charList, ...newCharList], //добавляем новых 9 персонажей к старым 0, 9, 18, 27 и т.д.
+            loading: false,
+            newItemLoading: false,
+            offset: offset + 9,
+            charEnded: ended
+        }))
     }
 
     onError = () => { //при возврате ошибки от сервера
@@ -63,7 +85,7 @@ class CharList extends Component {
 
     render() {
 
-        const {charList, loading, error} = this.state;
+        const {charList, loading, error, newItemLoading, offset, charEnded} = this.state;
         
         const items = this.renderItems(charList);
 
@@ -76,7 +98,12 @@ class CharList extends Component {
                 {errorMessage}
                 {spinner}
                 {content}
-                <button className="button button__main button__long">
+                <button 
+                    className="button button__main button__long"
+                    disabled={newItemLoading} //если идет подгрузка персонажей, кнопка стает неактивной
+                    style={{'display': charEnded ? 'none' : 'block'}} //когда уже некого загружать, скрываем кнопку
+                    //при клике, добавляем 9 новых персонажей
+                    onClick={() => this.onRequest(offset)}> 
                     <div className="inner">load more</div>
                 </button>
             </div>

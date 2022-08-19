@@ -9,14 +9,14 @@ import './charInfo.scss';
 
 class CharInfo extends Component {
     state = { //поля классов
-        char: null, //пустой объект, это уже true, хоть и в нем ничего нет
-        loading: false,
+        char: null, //пустой объект, это уже true, хоть и в нем ничего нет (а null даст как раз false)
+        loading: false, //изменится только после выбора персонажа пользователем
         error: false
     }
 
     marvelService = new MarvelService();
 
-    componentDidMount() {
+    componentDidMount() { //когда компонент отрендерился
         this.updateChar();
     }
 
@@ -27,9 +27,9 @@ class CharInfo extends Component {
     }
 
     updateChar = () => {
-        const {charId} = this.props;
-        if (!charId) { //если ID нет, то остановим метод
-            return;
+        const {charId} = this.props; //вытаскиваем полученный id из App (записали в props)
+        if (!charId) { //если ID нет, то остановим метод (при первой загузке ничего и не покажет)
+            return; 
         }
 
         this.onCharLoading();
@@ -60,13 +60,13 @@ class CharInfo extends Component {
         })
     }
 
-    render() { //здесь прописана логика приложения, до формирования верстки (View)
+    render() { //здесь прописана логика и состояние компонента, до формирования верстки (View)
         const {char, loading, error} = this.state;
 
         const skeleton = char || loading || error ? null : <Skeleton/>; //постим заглушку (скелетон), если ничего нет
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error || !char) ? <View char={char}/> : null;
+        const content = !(loading || error || !char) ? <View char={char}/> : null; //не загрузка, не ошибка, но есть персонаж
 
         return (
             <div className="char__info">
@@ -110,7 +110,7 @@ const View = ({char}) => { //формирование верстки на стр
                 {comics.length > 0 ? null : 'There is no comics with this character'}
                 {comics.map((item, i) => {
                     // eslint-disable-next-line
-                    if (i > 9) return; //при большом кол-ве элементов стандартный цикл с break
+                    if (i > 9) return; //при большем кол-ве элементов применять стандартный цикл с break!
                         return (
                             <li key={i} className="char__comics-item">
                                 {item.name}

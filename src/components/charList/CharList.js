@@ -23,14 +23,14 @@ class CharList extends Component {
         this.onRequest();
     }
 
-    onRequest = (offset) => { //делаем запрос на сервер с возможностью задать отступ
+    onRequest = (offset) => { //делаем запрос на сервер с новым отступом (в 9 персонажей)
         this.onCharListLoading();
         this.marvelService.getAllCharacters(offset)
             .then(this.onCharListLoaded)
             .catch(this.onError)
     }
 
-    onCharListLoading = () => { //загружаются новые персонажи
+    onCharListLoading = () => { //загружаются новые персонажи (после нажатия на кнопку)
         this.setState({
             newItemLoading: true
         })
@@ -42,7 +42,7 @@ class CharList extends Component {
             ended = true;
         }
         
-        this.setState(({offset, charList}) => ({
+        this.setState(({offset, charList}) => ({ //отталкиваемся от предыдущих даннных (поэтому callback function)
             charList: [...charList, ...newCharList], //добавляем новых 9 персонажей к старым 0, 9, 18, 27 и т.д.
             loading: false,
             newItemLoading: false,
@@ -86,7 +86,7 @@ class CharList extends Component {
                     key={item.id}
                     tabIndex={0} //фокус на элементе с клавиатуры 
                     onClick={() => {
-                        this.props.onCharSelected(item.id);
+                        this.props.onCharSelected(item.id); //передаем id выше в App
                         this.focusOnItem(i);
                     }}
                     onKeyPress={(e) => { //событие нажатия на клавиатуру (элемент должен быть в фокусе)

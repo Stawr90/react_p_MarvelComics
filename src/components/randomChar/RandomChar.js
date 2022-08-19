@@ -13,15 +13,15 @@ class RandomChar extends Component {
         error: false //ошибка с сервера
     }
 
-    marvelService = new MarvelService();
+    marvelService = new MarvelService(); //новое свойство класса (взятое из MarvelService, со своими методами)
 
-    componentDidMount() { //при создании элемента на странице
-        this.updateChar();
+    componentDidMount() { //при создании элемента на странице (constructor, render, DOM и в конце componentDidMount)
+        this.updateChar(); //обновления делать лучше в этом хуке
         // this.timerId = setInterval(this.updateChar, 3000);
     }
 
     componentWillUnmount() { //при удалении элемента со страницы
-        clearInterval(this.timerId);
+        clearInterval(this.timerId); //отписываемся от повторяющегося действия
     }
 
     onCharLoaded = (char) => { //записываем в объект с персонажами, после загрузки из API
@@ -46,7 +46,7 @@ class RandomChar extends Component {
 
     updateChar = () => {
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000); //рандомное число
-        this.onCharLoading();
+        this.onCharLoading(); //запускаем спинер до запроса на сервер
         this.marvelService
             .getCharacter(id)
             .then(this.onCharLoaded) //перезаписываем объект с нужными характеристиками из API
@@ -82,7 +82,7 @@ class RandomChar extends Component {
     }
 }
 
-const View = ({char}) => {
+const View = ({char}) => { //компонент View просто принимает данные и отображает на странице
     const {name, description, thumbnail, homepage, wiki} = char;
     let imgStyle = {'objectFit' : 'cover'};
     if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {

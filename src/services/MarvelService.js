@@ -1,4 +1,4 @@
-
+//Простой класс на обычном JS (ничего наследовать от React не требуется)
 class MarvelService {
     _apiBase = 'https://gateway.marvel.com:443/v1/public/'; // _ данные не должны изменяться
     _apiKey = 'apikey=ebdf3e4682780795ea407ac7fd512bcc';
@@ -12,7 +12,7 @@ class MarvelService {
 
         }
 
-        return await res.json();
+        return await res.json(); //преобразуем в формат JSON
     }
 
     getAllCharacters = async (offset = this._baseOffset) => { //получение всех персонажей (по умолчанию offset = 210)

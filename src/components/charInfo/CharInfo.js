@@ -1,4 +1,5 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
@@ -7,76 +8,59 @@ import Skeleton from '../skeleton/Skeleton';
 
 import './charInfo.scss';
 
-class CharInfo extends Component {
-    state = { //поля классов
-        char: null, //пустой объект, это уже true, хоть и в нем ничего нет (а null даст как раз false)
-        loading: false, //изменится только после выбора персонажа пользователем
-        error: false
-    }
+const CharInfo = (props) => {
 
-    marvelService = new MarvelService();
+    const [char, setChar] = useState(null); //пустой объект, это уже true, хоть и в нем ничего нет (а null даст как раз false)
+    const [loading, setLoading] = useState(false); //изменится только после выбора персонажа пользователем
+    const [error, setError] = useState(false);
 
-    componentDidMount() { //когда компонент отрендерился
-        this.updateChar();
-    }
+    const marvelService = new MarvelService();
 
-    componentDidUpdate(prevProps) { //всегда использовать prevProps, prevState чтоб не зациклить запросы!
-        if (this.props.charId !== prevProps.charId) { //обязательно сравнивать что было, и что приходит
-            this.updateChar();
-        }
-    }
+    useEffect(() => {
+        updateChar();
+    }, [props.charId])
 
-    updateChar = () => {
-        const {charId} = this.props; //вытаскиваем полученный id из App (записали в props)
+    const updateChar = () => {
+        const {charId} = props; //вытаскиваем полученный id из App (записали в props)
         if (!charId) { //если ID нет, то остановим метод (при первой загузке ничего и не покажет)
             return; 
         }
 
-        this.onCharLoading();
+        onCharLoading();
 
-        this.marvelService
-            .getCharacter(charId)
-            .then(this.onCharLoaded)
-            .catch(this.onError);
+        marvelService.getCharacter(charId)
+            .then(onCharLoaded)
+            .catch(onError);
     }
 
-    onCharLoaded = (char) => { //записываем в объект с персонажами, после загрузки из API
-        this.setState({
-            char, 
-            loading: false //загрузка выключается, после подгрузки всех характеристик персонажа
-        })
+    const onCharLoaded = (char) => { //записываем в объект с персонажами, после загрузки из API
+        setChar(char);
+        setLoading(false); //загрузка выключается, после подгрузки всех характеристик персонажа
     }
 
-    onCharLoading = () => {
-        this.setState({
-            loading: true
-        })
+    const onCharLoading = () => {
+        setLoading(true);
     }
 
-    onError = () => { //при ошибке, идет показ изображения
-        this.setState({
-            loading: false,
-            error: true
-        })
+    const onError = () => { //при ошибке, идет показ изображения
+        setLoading(false);
+        setError(true)
     }
 
-    render() { //здесь прописана логика и состояние компонента, до формирования верстки (View)
-        const {char, loading, error} = this.state;
+    //здесь прописана логика и состояние компонента, до формирования верстки (View)
+    const skeleton = char || loading || error ? null : <Skeleton/>; //постим заглушку (скелетон), если ничего нет
+    const errorMessage = error ? <ErrorMessage/> : null;
+    const spinner = loading ? <Spinner/> : null;
+    const content = !(loading || error || !char) ? <View char={char}/> : null; //не загрузка, не ошибка, но есть персонаж
 
-        const skeleton = char || loading || error ? null : <Skeleton/>; //постим заглушку (скелетон), если ничего нет
-        const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error || !char) ? <View char={char}/> : null; //не загрузка, не ошибка, но есть персонаж
-
-        return (
-            <div className="char__info">
-                {skeleton}
-                {errorMessage}
-                {spinner}
-                {content}
-            </div>
-        )
-    }
+    return (
+        <div className="char__info">
+            {skeleton}
+            {errorMessage}
+            {spinner}
+            {content}
+        </div>
+    )
 }
 
 const View = ({char}) => { //формирование верстки на странице
@@ -121,5 +105,10 @@ const View = ({char}) => { //формирование верстки на стр
         </>
     )
 }
+
+CharInfo.propTypes = {
+    charId: PropTypes.number
+}
+
 
 export default CharInfo;

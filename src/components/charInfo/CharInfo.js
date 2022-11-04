@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
@@ -11,10 +11,8 @@ import './charInfo.scss';
 const CharInfo = (props) => {
 
     const [char, setChar] = useState(null); //пустой объект, это уже true, хоть и в нем ничего нет (а null даст как раз false)
-    const [loading, setLoading] = useState(false); //изменится только после выбора персонажа пользователем
-    const [error, setError] = useState(false);
 
-    const marvelService = new MarvelService();
+    const {loading, error, getCharacter, clearError} = useMarvelService();
 
     useEffect(() => {
         updateChar();
@@ -26,25 +24,13 @@ const CharInfo = (props) => {
             return; 
         }
 
-        onCharLoading();
-
-        marvelService.getCharacter(charId)
+        clearError();
+        getCharacter(charId)
             .then(onCharLoaded)
-            .catch(onError);
     }
 
     const onCharLoaded = (char) => { //записываем в объект с персонажами, после загрузки из API
         setChar(char);
-        setLoading(false); //загрузка выключается, после подгрузки всех характеристик персонажа
-    }
-
-    const onCharLoading = () => {
-        setLoading(true);
-    }
-
-    const onError = () => { //при ошибке, идет показ изображения
-        setLoading(false);
-        setError(true)
     }
 
     //здесь прописана логика и состояние компонента, до формирования верстки (View)

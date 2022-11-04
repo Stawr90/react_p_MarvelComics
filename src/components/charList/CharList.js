@@ -3,34 +3,27 @@ import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 import './charList.scss';
 
 const CharList = (props) => {
 
     const [charList, setCharList] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
     const [newItemLoading, setNewItemLoading] = useState(false); //загрузка новых персонажей
     const [offset, setOffset] = useState(210); //с какого кол-ва персонажей начинаем
     const [charEnded, setCharEnded] = useState(false); //когда закончился массив с персонажами
 
-    const marvelService = new MarvelService();
+    const {loading, error, getAllCharacters} = useMarvelService();
 
     useEffect(() => { //при создании элемента на странице
-        onRequest();
+        onRequest(offset, true);
     }, [])
 
-    const onRequest = (offset) => { //делаем запрос на сервер с новым отступом (в 9 персонажей)
-        onCharListLoading();
-        marvelService.getAllCharacters(offset)
+    const onRequest = (offset, initial) => { //делаем запрос на сервер с новым отступом (в 9 персонажей)
+        initial ? setNewItemLoading(false) : setNewItemLoading(true); //включается загрузка, только при подгрузке новых персонажей
+        getAllCharacters(offset)
             .then(onCharListLoaded)
-            .catch(onError)
-    }
-
-    const onCharListLoading = () => { //загружаются новые персонажи (после нажатия на кнопку)
-        setNewItemLoading(true);
     }
 
     const onCharListLoaded = (newCharList) => { //записываем в массив с персонажами, после загрузки из API (персонажи загрузились)
@@ -40,15 +33,9 @@ const CharList = (props) => {
         }
         
         setCharList(charList => [...charList, ...newCharList]); //добавляем новых 9 персонажей к старым 0, 9, 18, 27 и т.д.
-        setLoading(loading => false);
         setNewItemLoading(newItemLoading => false);
         setOffset(offset => offset + 9);
         setCharEnded(charEnded => ended);
-    }
-
-    const onError = () => { //при возврате ошибки от сервера
-            setError(true);
-            setLoading(loading => false);
     }
 
     const itemRefs = useRef([]);
@@ -100,14 +87,13 @@ const CharList = (props) => {
     const items = renderItems(charList);
 
     const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error) ? items : null;
+    const spinner = loading && !newItemLoading ? <Spinner/> : null; // идет загрузка первых 9 и не загрузка новых персонажей
 
     return (
         <div className="char__list">
             {errorMessage}
             {spinner}
-            {content}
+            {items}
             <button 
                 className="button button__main button__long"
                 disabled={newItemLoading} //если идет подгрузка персонажей, кнопка стает неактивной

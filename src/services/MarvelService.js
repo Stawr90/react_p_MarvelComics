@@ -2,7 +2,7 @@ import {useHttp} from '../hooks/http.hook';
 
 //Простой класс на обычном JS (ничего наследовать от React не требуется)
 const useMarvelService = () => {
-    const {loading, request, error} = useHttp();
+    const {loading, request, error, clearError} = useHttp();
 
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/'; // _ данные не должны изменяться
     const _apiKey = 'apikey=ebdf3e4682780795ea407ac7fd512bcc';
@@ -30,7 +30,7 @@ const useMarvelService = () => {
         }
     }
 
-    return {loading, error, getAllCharacters, getCharacter} //вытаскиваем нужные компоненты для дальнейшего использования
+    return {loading, error, getAllCharacters, getCharacter, clearError} //вытаскиваем нужные компоненты для дальнейшего использования
 }
 
 export default useMarvelService;

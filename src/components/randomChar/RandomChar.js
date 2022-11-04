@@ -9,7 +9,7 @@ import mjolnir from '../../resources/img/mjolnir.png';
 const RandomChar = () => {
 
     const [char, setChar] = useState({});
-    const [loading, error, getCharacter] = useMarvelService(); //берем сразу из нашего Хука и можем там менять
+    const {loading, error, getCharacter, clearError} = useMarvelService(); //берем сразу из нашего Хука и можем там менять
     //спинер загрузки и ошибки теперь обрабатываются внутри Хука (при каждлм обращении к серверу)
 
     useEffect(() => {
@@ -26,9 +26,10 @@ const RandomChar = () => {
     }
 
     const updateChar = () => {
+        clearError(); //очищаем ошибку от сообщения, для подгрузки нового персонажа
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000); //рандомное число
         getCharacter(id)
-            .then(onCharLoaded) //перезаписываем объект с нужными характеристиками из API
+            .then(onCharLoaded); //перезаписываем объект с нужными характеристиками из API
     }
 
     const errorMessage = error ? <ErrorMessage/> : null;

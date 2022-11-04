@@ -11,7 +11,7 @@ export const useHttp = () => { // Хук запроса и обработки д
             const response = await fetch(url, {method, body, headers});
 
             if (!response.ok) {
-                throw new Error(`Could not fetch ${url}, status: ${res.status}`); //отправим в catch
+                throw new Error(`Could not fetch ${url}, status: ${response.status}`); //отправим в catch
             }
 
             const data = await response.json();
@@ -26,5 +26,5 @@ export const useHttp = () => { // Хук запроса и обработки д
 
     const clearError = useCallback(() => setError(null), []);
 
-    return {loading, request, error, clearError};
+    return {loading, request, error, clearError}
 }

@@ -1,31 +1,24 @@
+import {useHttp} from '../hooks/http.hook';
+
 //Простой класс на обычном JS (ничего наследовать от React не требуется)
-class MarvelService {
-    _apiBase = 'https://gateway.marvel.com:443/v1/public/'; // _ данные не должны изменяться
-    _apiKey = 'apikey=ebdf3e4682780795ea407ac7fd512bcc';
-    _baseOffset = 210; //начинаем с такого кол-ва персонажей
+const useMarvelService = () => {
+    const {loading, request, error} = useHttp();
 
-    getResource = async (url) => { //запрос на сервер
-        let res = await fetch(url);
+    const _apiBase = 'https://gateway.marvel.com:443/v1/public/'; // _ данные не должны изменяться
+    const _apiKey = 'apikey=ebdf3e4682780795ea407ac7fd512bcc';
+    const _baseOffset = 210; //начинаем с такого кол-ва персонажей
 
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-
-        }
-
-        return await res.json(); //преобразуем в формат JSON
+    const getAllCharacters = async (offset = _baseOffset) => { //получение всех персонажей (по умолчанию offset = 210)
+        const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
+        return res.data.results.map(_transformCharacter); //получаем новый массив с нужными характеристиками персонажей
     }
 
-    getAllCharacters = async (offset = this._baseOffset) => { //получение всех персонажей (по умолчанию offset = 210)
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`);
-        return res.data.results.map(this._transformCharacter); //получаем новый массив с нужными характеристиками персонажей
+    const getCharacter = async (id) => { //получение определенного персонажа по id
+        const res = await request(`${_apiBase}characters/${id}?${_apiKey}`); //получаем все характеристики
+        return _transformCharacter(res.data.results[0]); //получение только нужных характеристик
     }
 
-    getCharacter = async (id) => { //получение определенного персонажа по id
-        const res = await this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`); //получаем все характеристики
-        return this._transformCharacter(res.data.results[0]); //получение только нужных характеристик
-    }
-
-    _transformCharacter = (char) => { //получение нужных данных из API
+    const _transformCharacter = (char) => { //получение нужных данных из API
         return {
             id: char.id,
             name: char.name,
@@ -36,6 +29,8 @@ class MarvelService {
             comics: char.comics.items
         }
     }
+
+    return {loading, error, getAllCharacters, getCharacter} //вытаскиваем нужные компоненты для дальнейшего использования
 }
 
-export default MarvelService;
+export default useMarvelService;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
@@ -9,10 +9,8 @@ import mjolnir from '../../resources/img/mjolnir.png';
 const RandomChar = () => {
 
     const [char, setChar] = useState({});
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-
-    const marvelService = new MarvelService(); //новое свойство класса (взятое из MarvelService, со своими методами)
+    const [loading, error, getCharacter] = useMarvelService(); //берем сразу из нашего Хука и можем там менять
+    //спинер загрузки и ошибки теперь обрабатываются внутри Хука (при каждлм обращении к серверу)
 
     useEffect(() => {
         updateChar();
@@ -25,24 +23,12 @@ const RandomChar = () => {
 
     const onCharLoaded = (char) => { //записываем в объект с персонажами, после загрузки из API
         setChar(char);
-        setLoading(false);
-    }
-
-    const onCharLoading = () => {
-        setLoading(true);
-    }
-
-    const onError = () => { //при ошибке, идет показ изображения
-        setLoading(false);
-        setError(true);
     }
 
     const updateChar = () => {
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000); //рандомное число
-        onCharLoading(); //запускаем спинер до запроса на сервер
-        marvelService.getCharacter(id)
+        getCharacter(id)
             .then(onCharLoaded) //перезаписываем объект с нужными характеристиками из API
-            .catch(onError);
     }
 
     const errorMessage = error ? <ErrorMessage/> : null;

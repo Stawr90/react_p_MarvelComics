@@ -8,9 +8,17 @@ const useMarvelService = () => {
     const _apiKey = 'apikey=ebdf3e4682780795ea407ac7fd512bcc';
     const _baseOffset = 210; //начинаем с такого кол-ва персонажей
 
-    const getAllCharacters = async (offset = _baseOffset) => { //получение всех персонажей (по умолчанию offset = 210)
-        const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
-        return res.data.results.map(_transformCharacter); //получаем новый массив с нужными характеристиками персонажей
+    const getAllresult = async (offset = _baseOffset, char, limit, newarray) => { //получение всех персонажей (по умолчанию offset = 210)
+        const res = await request(`${_apiBase}${char}?limit=${limit}&offset=${offset}&${_apiKey}`);
+        return res.data.results.map(newarray); //получаем новый массив с нужными характеристиками персонажей
+    }
+
+    const getAllCharacters = () => {
+        return getAllresult(210, 'characters', '9', _transformCharacter)
+    }
+
+    const getAllComics = () => {
+        return getAllresult(210, 'comics', '8', _transformComics)
     }
 
     const getCharacter = async (id) => { //получение определенного персонажа по id
@@ -30,7 +38,16 @@ const useMarvelService = () => {
         }
     }
 
-    return {loading, error, getAllCharacters, getCharacter, clearError} //вытаскиваем нужные компоненты для дальнейшего использования
+    const _transformComics = (char) => {
+        return {
+            id: char.id,
+            title: char.title,
+            thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
+            prices: char.prices[0].price + '$'
+        }
+    }
+
+    return {loading, error, getAllCharacters, getAllComics, getCharacter, clearError} //вытаскиваем нужные компоненты для дальнейшего использования
 }
 
 export default useMarvelService;

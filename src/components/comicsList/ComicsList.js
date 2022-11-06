@@ -46,7 +46,7 @@ const ComicsList = () => {
             return (
                 <li //id передается выше в app
                     className="comics__item"
-                    key={item.id}
+                    key={item.id + Math.random()}
                     tabIndex={0} //фокус на элементе с клавиатуры 
                     // onClick={() => {
                     //     props.onCharSelected(item.id); //передаем id выше в App
@@ -78,7 +78,7 @@ const ComicsList = () => {
     const items = renderItems(charList);
 
     const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !newItemLoading ? <Spinner/> : null; // идет загрузка первых 9 и не загрузка новых персонажей
+    const spinner = loading && !newItemLoading ? <Spinner/> : null; // идет загрузка первых 8 и не загрузка новых персонажей
 
     return (
         <div className="comics__list">
@@ -89,7 +89,7 @@ const ComicsList = () => {
                 className="button button__main button__long"
                 disabled={newItemLoading} //если идет подгрузка персонажей, кнопка стает неактивной
                 style={{'display': charEnded ? 'none' : 'block'}} //когда уже некого загружать, скрываем кнопку
-                //при клике, добавляем 9 новых персонажей
+                //при клике, добавляем 8 новых персонажей
                 onClick={() => onRequest(offset)}> 
                 <div className="inner">load more</div>
             </button>

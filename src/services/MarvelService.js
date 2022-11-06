@@ -13,12 +13,12 @@ const useMarvelService = () => {
         return res.data.results.map(newarray); //получаем новый массив с нужными характеристиками персонажей
     }
 
-    const getAllCharacters = () => {
-        return getAllresult(210, 'characters', '9', _transformCharacter)
+    const getAllCharacters = (offset) => {
+        return getAllresult(offset, 'characters', '9', _transformCharacter)
     }
 
-    const getAllComics = () => {
-        return getAllresult(210, 'comics', '8', _transformComics)
+    const getAllComics = (offset) => {
+        return getAllresult(offset, 'comics', '8', _transformComics)
     }
 
     const getCharacter = async (id) => { //получение определенного персонажа по id

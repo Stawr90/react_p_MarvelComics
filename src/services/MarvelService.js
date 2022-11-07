@@ -8,22 +8,24 @@ const useMarvelService = () => {
     const _apiKey = 'apikey=ebdf3e4682780795ea407ac7fd512bcc';
     const _baseOffset = 210; //начинаем с такого кол-ва персонажей
 
-    const getAllresult = async (offset = _baseOffset, char, limit, newarray) => { //получение всех персонажей (по умолчанию offset = 210)
-        const res = await request(`${_apiBase}${char}?limit=${limit}&offset=${offset}&${_apiKey}`);
-        return res.data.results.map(newarray); //получаем новый массив с нужными характеристиками персонажей
-    }
-
-    const getAllCharacters = (offset) => {
-        return getAllresult(offset, 'characters', '9', _transformCharacter)
-    }
-
-    const getAllComics = (offset) => {
-        return getAllresult(offset, 'comics', '8', _transformComics)
+    const getAllCharacters = async (offset = _baseOffset) => { //получение всех персонажей (по умолчанию offset = 210)
+        const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
+        return res.data.results.map(_transformCharacter); //получаем новый массив с нужными характеристиками персонажей
     }
 
     const getCharacter = async (id) => { //получение определенного персонажа по id
         const res = await request(`${_apiBase}characters/${id}?${_apiKey}`); //получаем все характеристики
         return _transformCharacter(res.data.results[0]); //получение только нужных характеристик
+    }
+
+    const getAllComics = async (offset = 0) => {
+        const res = await request(`${_apiBase}comics?orderBy=issueNumber&limit=8&offset=${offset}&${_apiKey}`);
+        return res.data.results.map(_transformComics);
+    }
+
+    const getComics = async (id) => {
+        const res = await request(`${_apiBase}comics/${id}?${_apiKey}`);
+        return _transformComics(res.data.results[0]);
     }
 
     const _transformCharacter = (char) => { //получение нужных данных из API
@@ -38,16 +40,19 @@ const useMarvelService = () => {
         }
     }
 
-    const _transformComics = (char) => {
+    const _transformComics = (comics) => {
         return {
-            id: char.id,
-            title: char.title,
-            thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
-            prices: char.prices[0].price + '$'
+            id: comics.id,
+            title: comics.title,
+            description: comics.description || 'There is no description',
+            pageCount: comics.pageCount ? `${comics.pageCount} p.` : 'No information about the number of pages',
+            thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
+            language: comics.textObjects.language || 'en-us',
+            price: comics.prices.price ? `${comics.prices.price}$` : 'not available'
         }
     }
 
-    return {loading, error, getAllCharacters, getAllComics, getCharacter, clearError} //вытаскиваем нужные компоненты для дальнейшего использования
+    return {loading, error, clearError, getAllCharacters, getCharacter, getAllComics, getComics} //вытаскиваем нужные компоненты для дальнейшего использования
 }
 
 export default useMarvelService;

@@ -12,12 +12,11 @@ const AppHeader = () => {
             <nav className="app__menu">
                 <ul>
                     <li><NavLink 
-                    end 
+                    end //строгий режим путей (без него будет искать просто совпадение в пути)
                     style={({isActive}) => ({color: isActive ? '#9f0013' : 'inherit'})}
                     to="/">Characters</NavLink></li>
                     /
-                    <li><NavLink 
-                    end 
+                    <li><NavLink
                     style={({isActive}) => ({color: isActive ? '#9f0013' : 'inherit'})}
                     to="/comics">Comics</NavLink></li>
                 </ul>

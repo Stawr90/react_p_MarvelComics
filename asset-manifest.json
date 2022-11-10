@@ -3,8 +3,8 @@
     "main.css": "/react_p_MarvelComics/static/css/main.2faea179.chunk.css",
     "main.js": "/react_p_MarvelComics/static/js/main.bc6c6ff5.chunk.js",
     "main.js.map": "/react_p_MarvelComics/static/js/main.bc6c6ff5.chunk.js.map",
-    "runtime-main.js": "/react_p_MarvelComics/static/js/runtime-main.ae6056ac.js",
-    "runtime-main.js.map": "/react_p_MarvelComics/static/js/runtime-main.ae6056ac.js.map",
+    "runtime-main.js": "/react_p_MarvelComics/static/js/runtime-main.9992a1c8.js",
+    "runtime-main.js.map": "/react_p_MarvelComics/static/js/runtime-main.9992a1c8.js.map",
     "static/js/2.4a9408de.chunk.js": "/react_p_MarvelComics/static/js/2.4a9408de.chunk.js",
     "static/js/2.4a9408de.chunk.js.map": "/react_p_MarvelComics/static/js/2.4a9408de.chunk.js.map",
     "static/css/3.c1d2624b.chunk.css": "/react_p_MarvelComics/static/css/3.c1d2624b.chunk.css",
@@ -16,8 +16,8 @@
     "static/css/5.7cf17460.chunk.css": "/react_p_MarvelComics/static/css/5.7cf17460.chunk.css",
     "static/js/5.19e1e531.chunk.js": "/react_p_MarvelComics/static/js/5.19e1e531.chunk.js",
     "static/js/5.19e1e531.chunk.js.map": "/react_p_MarvelComics/static/js/5.19e1e531.chunk.js.map",
-    "static/js/6.7f9c6612.chunk.js": "/react_p_MarvelComics/static/js/6.7f9c6612.chunk.js",
-    "static/js/6.7f9c6612.chunk.js.map": "/react_p_MarvelComics/static/js/6.7f9c6612.chunk.js.map",
+    "static/js/6.b3fef4ed.chunk.js": "/react_p_MarvelComics/static/js/6.b3fef4ed.chunk.js",
+    "static/js/6.b3fef4ed.chunk.js.map": "/react_p_MarvelComics/static/js/6.b3fef4ed.chunk.js.map",
     "index.html": "/react_p_MarvelComics/index.html",
     "static/css/3.c1d2624b.chunk.css.map": "/react_p_MarvelComics/static/css/3.c1d2624b.chunk.css.map",
     "static/css/4.18e2f0da.chunk.css.map": "/react_p_MarvelComics/static/css/4.18e2f0da.chunk.css.map",
@@ -31,7 +31,7 @@
     "static/media/vision.067d4ae1.png": "/react_p_MarvelComics/static/media/vision.067d4ae1.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.ae6056ac.js",
+    "static/js/runtime-main.9992a1c8.js",
     "static/js/2.4a9408de.chunk.js",
     "static/css/main.2faea179.chunk.css",
     "static/js/main.bc6c6ff5.chunk.js"

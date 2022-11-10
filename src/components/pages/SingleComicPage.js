@@ -8,7 +8,7 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import './singleComicPage.scss';
 
 const SingleComicPage = () => {
-    const {comicId} = useParams();
+    const {comicId} = useParams(); //берет параметры из ссылки (id)
     const [comic, setComic] = useState(null);
     const {loading, error, getComic, clearError} = useMarvelService();
 
